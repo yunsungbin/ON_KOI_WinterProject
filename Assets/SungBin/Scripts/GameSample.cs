@@ -8,6 +8,7 @@ public class GameSample : MonoBehaviour
     public GameObject targetPosition;
 
     public static bool isPurple = false;
+    public static float greenJumpTime;
 
     //player
     public float movePower = 5.0f;
@@ -74,13 +75,7 @@ public class GameSample : MonoBehaviour
     {
         if (collision.collider.CompareTag("GreenGround"))
         {
-            float timer = 0;
-            while(timer < 1)
-            {
-                timer += Time.deltaTime;
-                transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.15f, 0);
-            }
-            timer = 0;
+            StartCoroutine(GreenJump());
         }
         if (collision.collider.CompareTag("PurpleGround"))
         {
@@ -90,5 +85,17 @@ public class GameSample : MonoBehaviour
             }
             
         }
+    }
+
+    IEnumerator GreenJump()
+    {
+        float timer = 0;
+        while (timer < greenJumpTime)
+        {
+            timer += Time.deltaTime;
+            yield return new WaitForSeconds(0.005f);
+            transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.2f, 0);
+        }
+        timer = 0;
     }
 }

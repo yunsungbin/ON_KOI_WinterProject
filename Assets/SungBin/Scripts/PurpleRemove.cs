@@ -8,7 +8,7 @@ public class PurpleRemove : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         float timer = 0;
-        Destroy(purpleGround, 1.0f);
+        Destroy(purpleGround, 0.5f);
         while (timer > 1)
         {
             timer += Time.deltaTime;
