@@ -19,6 +19,7 @@ public class GameSample : MonoBehaviour
     public static int jumper = 1;
 
     Rigidbody2D rigid;
+    public Animator anim;
     Vector3 movement;
     bool isJumping = false;
     public enum PlayerState
@@ -42,22 +43,53 @@ public class GameSample : MonoBehaviour
 
     public void PlayerMove()
     {
-        //player 이동
         Vector3 moveVelocity = Vector3.zero;
-
-        if (Input.GetKey(KeyCode.A))
+        switch (playerState)
         {
-            moveVelocity = Vector3.left;
+
+            case PlayerState.None:
+                {
+                    if (moveVelocity == Vector3.left)
+                    {
+                        anim.SetTrigger("LWait");
+                        
+                    }
+                    else if (moveVelocity == Vector3.right)
+                    {
+                        anim.SetTrigger("Wait");
+                        
+                    }
+                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                    {
+                        playerState = PlayerState.Walk;
+                    }
+                    break;
+                }
+            //player 이동
+            case PlayerState.Walk:
+                {
+                    
+                    if (Input.GetKey(KeyCode.A))
+                    {
+                        moveVelocity = Vector3.left;
+                        //anim.SetTrigger("");
+                    }
+
+                    else if (Input.GetKey(KeyCode.D))
+                    {
+                        moveVelocity = Vector3.right;
+                    }
+
+                    if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+                    {
+                        playerState = PlayerState.None;
+                    }
+
+                    transform.position += moveVelocity * movePower * Time.deltaTime;
+                    break;
+                }
         }
 
-        else if (Input.GetKey(KeyCode.D))
-        {
-            moveVelocity = Vector3.right;
-        }
-
-        transform.position += moveVelocity * movePower * Time.deltaTime;
-
-        
     }
 
     public void PlayerJump()
