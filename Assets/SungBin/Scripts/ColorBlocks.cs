@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ColorBlocks : MonoBehaviour
 {
+    [SerializeField] ParticleSystem particle;
     public enum ColorState
     {
         None, Purple, Green, Red
@@ -71,6 +72,9 @@ public class ColorBlocks : MonoBehaviour
                     {
                         RedCheek[redSum].gameObject.SetActive(false);
                         redSum++;
+                        ParticleSystem pc = Instantiate(particle);
+                        pc.transform.position = RedCheek[redSum].gameObject.transform.position;
+                        pc.Play();
                         RedBreak.RedArea = false;
                     }
                     break;
