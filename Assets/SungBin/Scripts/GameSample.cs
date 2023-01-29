@@ -10,6 +10,9 @@ public class GameSample : MonoBehaviour
     public static bool isPurple = false;
     public static float greenJumpTime;
 
+    //Red
+    public static bool BreakRed = false;
+
     //player
     public float movePower = 5.0f;
     public float jumpPower = 10.0f;
@@ -26,7 +29,7 @@ public class GameSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 start = new Vector3(-6.67f, -3.4f, 0);
+        Vector3 start = new Vector3(-4.6f, -2.53f, 0);
         rigid = gameObject.GetComponent<Rigidbody2D>();
     }
 
