@@ -7,7 +7,7 @@ public class ColorBlocks : MonoBehaviour
     [SerializeField] ParticleSystem particle;
     public enum ColorState
     {
-        None, Purple, Green, Red
+        None, Purple, Green, Red, Yellow
     }
     public ColorState colorState = ColorState.None;
     public GameObject purpleGround;
@@ -79,7 +79,32 @@ public class ColorBlocks : MonoBehaviour
                     }
                     break;
                 }
+            case ColorState.Yellow:
+                {
+                    if(GameSample.yellowCheek == true)
+                    {
+                        GameSample.jumpPower = 20;
+                        GameSample.movePower = 10;
+                        
+                    }
+                    else if(GameSample.yellowCheek == false)
+                    {
+                        GameSample.movePower = 5.0f;
+                        GameSample.jumpPower = 10.0f;
+                    }
+                    GameSample.jumper = 1;
+                    break;
+                }
         }
         
+    }
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (collision.collider.CompareTag("Player"))
+        {
+            GameSample.jumper = 1;
+            GCheek.IsGround = true;
+        }
     }
 }

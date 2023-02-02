@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameSample : MonoBehaviour
 {
+    //YellowGround
+    public static bool yellowCheek = false;
     //greenGround
     public GameObject targetPosition;
 
@@ -14,8 +16,8 @@ public class GameSample : MonoBehaviour
     public static bool BreakRed = false;
 
     //player
-    public float movePower = 5.0f;
-    public float jumpPower = 10.0f;
+    public static float movePower = 5.0f;
+    public static float jumpPower = 10.0f;
     public static int jumper = 1;
 
     Rigidbody2D rigid;
@@ -24,9 +26,11 @@ public class GameSample : MonoBehaviour
     bool isJumping = false;
     public enum PlayerState
     {
-        None, Walk, Run
+        None, Walk, Jump
     }
     public PlayerState playerState = PlayerState.None;
+    //에니메이션
+    private bool Left, Right = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +43,7 @@ public class GameSample : MonoBehaviour
     {
         PlayerMove();
         PlayerJump();
+        YellowCheek();
     }
 
     public void PlayerMove()
@@ -49,15 +54,15 @@ public class GameSample : MonoBehaviour
 
             case PlayerState.None:
                 {
-                    if (moveVelocity == Vector3.left)
+                    if (Right == true)
                     {
-                        anim.SetTrigger("LWait");
-                        
-                    }
-                    else if (moveVelocity == Vector3.right)
-                    {
+                        Right = false;
                         anim.SetTrigger("Wait");
-                        
+                    }
+                    if (Left == true)
+                    {
+                        Left = false;
+                        anim.SetTrigger("LWait");
                     }
                     if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
@@ -68,24 +73,33 @@ public class GameSample : MonoBehaviour
             //player 이동
             case PlayerState.Walk:
                 {
-                    
+                    float h = Input.GetAxis("Horizontal");
                     if (Input.GetKey(KeyCode.A))
                     {
+                        anim.SetTrigger("LWalk");
                         moveVelocity = Vector3.left;
-                        //anim.SetTrigger("");
+                        transform.position += moveVelocity * movePower * Time.deltaTime;
                     }
 
                     else if (Input.GetKey(KeyCode.D))
                     {
+                        anim.SetTrigger("Walk");
                         moveVelocity = Vector3.right;
+                        transform.position += moveVelocity * movePower * Time.deltaTime;
                     }
 
-                    if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+                    if(Input.GetKeyUp(KeyCode.D))
                     {
+                        anim.SetTrigger("Wait");
+                        Right = true;
                         playerState = PlayerState.None;
                     }
-
-                    transform.position += moveVelocity * movePower * Time.deltaTime;
+                    else if (Input.GetKeyUp(KeyCode.A))
+                    {
+                        anim.SetTrigger("LWait");
+                        Left = true;
+                        playerState = PlayerState.None;
+                    }
                     break;
                 }
         }
@@ -120,6 +134,12 @@ public class GameSample : MonoBehaviour
             }
             
         }
+        if (collision.collider.CompareTag("YellowGround"))
+        {
+            yellowCheek = true;
+            
+            jumper = 1;
+        }
     }
 
     IEnumerator GreenJump()
@@ -132,5 +152,14 @@ public class GameSample : MonoBehaviour
             transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.2f, 0);
         }
         timer = 0;
+    }
+
+    void YellowCheek()
+    {
+        if(yellowCheek == false)
+        {
+            movePower = 5.0f;
+            jumpPower = 10.0f;
+        }
     }
 }

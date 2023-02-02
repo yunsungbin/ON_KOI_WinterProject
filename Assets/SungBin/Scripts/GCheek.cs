@@ -12,6 +12,7 @@ public class GCheek : MonoBehaviour
         {
             GameSample.jumper = 1;
             IsGround = true;
+            GameSample.yellowCheek = false;
         }
     }
     

@@ -8,6 +8,7 @@ TagManager:
   - GreenGround
   - PurpleGround
   - Red
+  - YellowGround
   layers:
   - Default
   - TransparentFX
