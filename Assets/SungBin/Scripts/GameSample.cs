@@ -43,7 +43,6 @@ public class GameSample : MonoBehaviour
     {
         PlayerMove();
         PlayerJump();
-        YellowCheek();
     }
 
     public void PlayerMove()
@@ -134,12 +133,6 @@ public class GameSample : MonoBehaviour
             }
             
         }
-        if (collision.collider.CompareTag("YellowGround"))
-        {
-            yellowCheek = true;
-            
-            jumper = 1;
-        }
     }
 
     IEnumerator GreenJump()
@@ -152,14 +145,5 @@ public class GameSample : MonoBehaviour
             transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.2f, 0);
         }
         timer = 0;
-    }
-
-    void YellowCheek()
-    {
-        if(yellowCheek == false)
-        {
-            movePower = 5.0f;
-            jumpPower = 10.0f;
-        }
     }
 }

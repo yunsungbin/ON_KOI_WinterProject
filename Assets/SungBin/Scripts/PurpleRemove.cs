@@ -17,7 +17,7 @@ public class PurpleRemove : MonoBehaviour
     {
         if (ColorBlocks.pSpawn == true)
         {
-            for(i = 0; i < 14; i++)
+            for(i = 0; i < int.MaxValue; i++)
             {
                 purpleGround[i].SetActive(true);
             }

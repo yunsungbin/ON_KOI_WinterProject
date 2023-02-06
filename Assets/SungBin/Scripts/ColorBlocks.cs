@@ -27,7 +27,7 @@ public class ColorBlocks : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        redSum = 0;
     }
 
     // Update is called once per frame
@@ -92,7 +92,6 @@ public class ColorBlocks : MonoBehaviour
                         GameSample.movePower = 5.0f;
                         GameSample.jumpPower = 10.0f;
                     }
-                    GameSample.jumper = 1;
                     break;
                 }
         }
@@ -101,10 +100,11 @@ public class ColorBlocks : MonoBehaviour
     public void OnCollisionEnter2D(Collision2D collision)
     {
 
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player") && colorState == ColorState.Yellow)
         {
             GameSample.jumper = 1;
             GCheek.IsGround = true;
+            GameSample.yellowCheek = true;
         }
     }
 }
