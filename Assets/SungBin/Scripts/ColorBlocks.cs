@@ -7,7 +7,7 @@ public class ColorBlocks : MonoBehaviour
     [SerializeField] ParticleSystem particle;
     public enum ColorState
     {
-        None, Purple, Green, Red, Yellow
+        None, Purple, Green, Red, Yellow, Blue
     }
     public ColorState colorState = ColorState.None;
     public GameObject purpleGround;
@@ -21,9 +21,10 @@ public class ColorBlocks : MonoBehaviour
 
     private bool BreakRed = false;
 
-
     public List<GameObject> RedCheek = new List<GameObject>();
     private int redSum;
+
+    private bool BlueType = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -87,11 +88,11 @@ public class ColorBlocks : MonoBehaviour
                         GameSample.movePower = 10;
                         
                     }
-                    else if(GameSample.yellowCheek == false)
-                    {
-                        GameSample.movePower = 5.0f;
-                        GameSample.jumpPower = 10.0f;
-                    }
+                    break;
+                }
+            case ColorState.Blue:
+                {
+                    transform.position = this.transform.position;
                     break;
                 }
         }
@@ -106,5 +107,17 @@ public class ColorBlocks : MonoBehaviour
             GCheek.IsGround = true;
             GameSample.yellowCheek = true;
         }
+        if(collision.collider.CompareTag("Player") && BlueType == false)
+        {
+            StartCoroutine(TimeBlue());
+
+        }
+    }
+
+    IEnumerator TimeBlue()
+    {
+        transform.position = this.transform.position;
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(TimeBlue());
     }
 }

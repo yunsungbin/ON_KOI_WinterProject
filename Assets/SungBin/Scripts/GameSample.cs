@@ -121,6 +121,16 @@ public class GameSample : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.collider.CompareTag("Ground"))
+        {
+            movePower = 5;
+            jumpPower = 10.0f;
+        }
+        if (collision.collider.CompareTag("YellowGround"))
+        {
+            jumpPower = 20;
+            movePower = 10;
+        }
         if (collision.collider.CompareTag("GreenGround"))
         {
             StartCoroutine(GreenJump());
