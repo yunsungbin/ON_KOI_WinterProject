@@ -24,16 +24,18 @@ public class ColorBlocks : MonoBehaviour
     public List<GameObject> RedCheek = new List<GameObject>();
     private int redSum;
 
-    private bool BlueType = false;
+    Vector3 bluePos;
     // Start is called before the first frame update
     void Start()
     {
+        bluePos = this.transform.position;
         redSum = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         switch (colorState)
         {
             case ColorState.Purple:
@@ -88,11 +90,17 @@ public class ColorBlocks : MonoBehaviour
                         GameSample.movePower = 10;
                         
                     }
+                    if (GCheek.groundCH == true)
+                    {
+                        GameSample.jumpPower = 10;
+                        GameSample.movePower = 5;
+                    }
+
                     break;
                 }
             case ColorState.Blue:
                 {
-                    transform.position = this.transform.position;
+                    transform.position = new Vector3(transform.position.x, transform.position.y, 0);
                     break;
                 }
         }
@@ -105,19 +113,38 @@ public class ColorBlocks : MonoBehaviour
         {
             GameSample.jumper = 1;
             GCheek.IsGround = true;
+            GCheek.groundCH = false;
             GameSample.yellowCheek = true;
         }
-        if(collision.collider.CompareTag("Player") && BlueType == false)
+        if(collision.collider.CompareTag("Player") && colorState == ColorState.Blue && GameSample.CHblue == false)
         {
             StartCoroutine(TimeBlue());
-
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player") && colorState == ColorState.Yellow)
+        {
+            GCheek.groundCH = true;
+        }
+        if (collision.collider.CompareTag("Player") && colorState == ColorState.Blue)
+        {
+            StopCoroutine(TimeBlue());
         }
     }
 
     IEnumerator TimeBlue()
     {
-        transform.position = this.transform.position;
-        yield return new WaitForSeconds(0.1f);
-        StartCoroutine(TimeBlue());
+        transform.position = new Vector3(bluePos.x, bluePos.y, 0);
+        yield return null;
+        if(GameSample.CHblue == true)
+        {
+            StopCoroutine(TimeBlue());
+        }
+        else if(GameSample.CHblue == false)
+        {
+            StartCoroutine(TimeBlue());
+        }
+        
     }
 }

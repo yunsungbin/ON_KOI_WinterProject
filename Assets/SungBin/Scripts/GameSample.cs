@@ -26,11 +26,19 @@ public class GameSample : MonoBehaviour
     bool isJumping = false;
     public enum PlayerState
     {
-        None, Walk, Jump
+        None, Walk, Jump, Get
     }
     public PlayerState playerState = PlayerState.None;
     //에니메이션
     private bool Left, Right = false;
+
+    public enum PlayerColor
+    {
+        None, Blue
+    }
+    public PlayerColor playerColor = PlayerColor.None;
+
+    public static bool CHblue = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +49,7 @@ public class GameSample : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CHblue = false;
         PlayerMove();
         PlayerJump();
     }
@@ -53,6 +62,10 @@ public class GameSample : MonoBehaviour
 
             case PlayerState.None:
                 {
+                    if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
+                    {
+                        playerState = PlayerState.Get;
+                    }
                     if (Right == true)
                     {
                         Right = false;
@@ -67,11 +80,16 @@ public class GameSample : MonoBehaviour
                     {
                         playerState = PlayerState.Walk;
                     }
+                    
                     break;
                 }
             //player 이동
             case PlayerState.Walk:
                 {
+                    if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
+                    {
+                        playerState = PlayerState.Get;
+                    }
                     float h = Input.GetAxis("Horizontal");
                     if (Input.GetKey(KeyCode.A))
                     {
@@ -99,6 +117,43 @@ public class GameSample : MonoBehaviour
                         Left = true;
                         playerState = PlayerState.None;
                     }
+                    
+                    break;
+                }
+            case PlayerState.Get:
+                {
+                    if(MemoryAT.iRedAT == true)
+                    {
+                        anim.SetTrigger("RGet");
+                        anim.SetTrigger("Wait");
+                        Right = true;
+                        playerState = PlayerState.None;
+                    }
+                    else if(MemoryAT.iBlueAT == true)
+                    {
+
+                    }
+                    break;
+                }
+        }
+        switch (playerColor)
+        {
+            case PlayerColor.None:
+                {
+                    if (Input.GetKey(KeyCode.F))
+                    {
+                        CHblue = true;
+                        playerColor = PlayerColor.Blue;
+                    }
+                    break;
+                }
+            case PlayerColor.Blue:
+                {
+                    if (Input.GetKey(KeyCode.F))
+                    {
+                        CHblue = false;
+                        playerColor = PlayerColor.None;
+                    }
                     break;
                 }
         }
@@ -109,7 +164,7 @@ public class GameSample : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && GCheek.IsGround == true)
         {
-            rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            rigid.AddForce(Vector2.up * jumpPower * 1.8f, ForceMode2D.Impulse);
             jumper--;
             if (jumper == 0)
             {
