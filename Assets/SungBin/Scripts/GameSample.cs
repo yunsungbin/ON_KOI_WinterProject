@@ -26,7 +26,7 @@ public class GameSample : MonoBehaviour
     bool isJumping = false;
     public enum PlayerState
     {
-        None, Walk, Jump, Get
+        None, Walk, Jump, Get, BreakRed
     }
     public PlayerState playerState = PlayerState.None;
     //에니메이션
@@ -34,11 +34,9 @@ public class GameSample : MonoBehaviour
 
     public enum PlayerColor
     {
-        None, Blue
+        None, Blue, Red
     }
-    public PlayerColor playerColor = PlayerColor.None;
-
-    public static bool CHblue = true;
+    public static PlayerColor playerColor = PlayerColor.None;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,7 +47,6 @@ public class GameSample : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CHblue = false;
         PlayerMove();
         PlayerJump();
     }
@@ -62,9 +59,14 @@ public class GameSample : MonoBehaviour
 
             case PlayerState.None:
                 {
-                    if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
+                    //if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
+                    //{
+                    //    playerState = PlayerState.Get;
+                    //}
+                    if (RedBreak.RedArea == true && Input.GetKey(KeyCode.E))
                     {
-                        playerState = PlayerState.Get;
+                        playerState = PlayerState.BreakRed;
+                        playerColor = PlayerColor.Red;
                     }
                     if (Right == true)
                     {
@@ -86,16 +88,22 @@ public class GameSample : MonoBehaviour
             //player 이동
             case PlayerState.Walk:
                 {
-                    if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
-                    {
-                        playerState = PlayerState.Get;
-                    }
+                    //if (MemoryAT.iRedAT == true || MemoryAT.iBlueAT == true)
+                    //{
+                    //    playerState = PlayerState.Get;
+                    //}
+                    
                     float h = Input.GetAxis("Horizontal");
                     if (Input.GetKey(KeyCode.A))
                     {
                         anim.SetTrigger("LWalk");
                         moveVelocity = Vector3.left;
                         transform.position += moveVelocity * movePower * Time.deltaTime;
+                        if (RedBreak.RedArea == true && Input.GetKey(KeyCode.E))
+                        {
+                            playerState = PlayerState.BreakRed;
+                            StartCoroutine(LBreak());
+                        }
                     }
 
                     else if (Input.GetKey(KeyCode.D))
@@ -103,6 +111,11 @@ public class GameSample : MonoBehaviour
                         anim.SetTrigger("Walk");
                         moveVelocity = Vector3.right;
                         transform.position += moveVelocity * movePower * Time.deltaTime;
+                        if (RedBreak.RedArea == true && Input.GetKey(KeyCode.E))
+                        {
+                            playerState = PlayerState.BreakRed;
+                            StartCoroutine(RBreak());
+                        }
                     }
 
                     if(Input.GetKeyUp(KeyCode.D))
@@ -135,24 +148,44 @@ public class GameSample : MonoBehaviour
                     }
                     break;
                 }
+            case PlayerState.BreakRed:
+                {
+                    movePower = 0;
+                    jumpPower = 0;
+                    break;
+                }
         }
         switch (playerColor)
         {
             case PlayerColor.None:
                 {
-                    if (Input.GetKey(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
-                        CHblue = true;
                         playerColor = PlayerColor.Blue;
+                    }
+                    if(RedBreak.RedArea == true)
+                    {
+                        playerColor = PlayerColor.Red;
                     }
                     break;
                 }
             case PlayerColor.Blue:
                 {
-                    if (Input.GetKey(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
-                        CHblue = false;
                         playerColor = PlayerColor.None;
+                    }
+                    break;
+                }
+            case PlayerColor.Red:
+                {
+                    if(Right == true)
+                    {
+                        StartCoroutine(RBreak());
+                    }
+                    if(Left == true)
+                    {
+                        StartCoroutine(LBreak());
                     }
                     break;
                 }
@@ -198,6 +231,10 @@ public class GameSample : MonoBehaviour
             }
             
         }
+        if (collision.collider.CompareTag("Out"))
+        {
+            transform.position = new Vector3(-4.6f, -2.53f, 0);
+        }
     }
 
     IEnumerator GreenJump()
@@ -210,5 +247,41 @@ public class GameSample : MonoBehaviour
             transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.2f, 0);
         }
         timer = 0;
+    }
+
+    IEnumerator RBreak()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            anim.SetTrigger("Break");
+            movePower = 0;
+            jumpPower = 0;
+            yield return new WaitForSeconds(1);
+            movePower = 5;
+            jumpPower = 10.0f;
+            playerColor = PlayerColor.None;
+            anim.SetTrigger("Wait");
+            playerState = PlayerState.None;
+            StopCoroutine(RBreak());
+        }
+        
+    }
+
+    IEnumerator LBreak()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            anim.SetTrigger("LBreak");
+            movePower = 0;
+            jumpPower = 0;
+            yield return new WaitForSeconds(1);
+            movePower = 5;
+            jumpPower = 10.0f;
+            playerColor = PlayerColor.None;
+            playerState = PlayerState.None;
+            anim.SetTrigger("LWait");
+            StopCoroutine(LBreak());
+        }
+        
     }
 }
