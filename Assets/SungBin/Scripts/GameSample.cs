@@ -16,13 +16,15 @@ public class GameSample : MonoBehaviour
     public static bool BreakRed = false;
 
     //player
-    public static float movePower = 5.0f;
+    public static float movePower = 7.0f;
     public static float jumpPower = 10.0f;
     public static int jumper = 1;
+    public static bool jumping = false;
 
     Rigidbody2D rigid;
     public Animator anim;
     Vector3 movement;
+    Vector3 spawn;
     bool isJumping = false;
     public enum PlayerState
     {
@@ -40,10 +42,11 @@ public class GameSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 start = new Vector3(-4.6f, -2.53f, 0);
+        spawn = new Vector3(-4.6f, -2.53f, 0);
         rigid = gameObject.GetComponent<Rigidbody2D>();
     }
 
+    public static bool end = false;
     // Update is called once per frame
     void Update()
     {
@@ -72,11 +75,25 @@ public class GameSample : MonoBehaviour
                     {
                         Right = false;
                         anim.SetTrigger("Wait");
+                        if (RedBreak.RedArea == true && Input.GetKey(KeyCode.E))
+                        {
+                            playerState = PlayerState.BreakRed;
+                            StartCoroutine(RBreak());
+                        }
                     }
                     if (Left == true)
                     {
                         Left = false;
                         anim.SetTrigger("LWait");
+                        if (RedBreak.RedArea == true && Input.GetKey(KeyCode.E))
+                        {
+                            playerState = PlayerState.BreakRed;
+                            StartCoroutine(LBreak());
+                        }
+                    }
+                    if(jumping == true)
+                    {
+                        PlayerJump();
                     }
                     if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
@@ -117,8 +134,11 @@ public class GameSample : MonoBehaviour
                             StartCoroutine(RBreak());
                         }
                     }
-
-                    if(Input.GetKeyUp(KeyCode.D))
+                    if (jumping == true)
+                    {
+                        PlayerJump();
+                    }
+                    if (Input.GetKeyUp(KeyCode.D))
                     {
                         anim.SetTrigger("Wait");
                         Right = true;
@@ -197,6 +217,15 @@ public class GameSample : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && GCheek.IsGround == true)
         {
+            jumping = true;
+            if(Right == true)
+            {
+                anim.SetTrigger("Jump");
+            }
+            if(Left == true)
+            {
+                anim.SetTrigger("LJump");
+            }
             rigid.AddForce(Vector2.up * jumpPower * 1.8f, ForceMode2D.Impulse);
             jumper--;
             if (jumper == 0)
@@ -211,29 +240,53 @@ public class GameSample : MonoBehaviour
     {
         if (collision.collider.CompareTag("Ground"))
         {
-            movePower = 5;
+            movePower = 7;
             jumpPower = 10.0f;
+            jumping = false;
+            playerState = PlayerState.None;
         }
         if (collision.collider.CompareTag("YellowGround"))
         {
-            jumpPower = 20;
-            movePower = 10;
+            jumpPower = 15;
+            movePower = 12;
+            jumping = false;
+            playerState = PlayerState.None;
         }
         if (collision.collider.CompareTag("GreenGround"))
         {
             StartCoroutine(GreenJump());
+            jumping = false;
+            playerState = PlayerState.None;
         }
         if (collision.collider.CompareTag("PurpleGround"))
         {
             if(ColorBlocks.PurpleSpawn == false)
             {
                 isPurple = true;
+                jumping = false;
+                jumper = 1;
+                GCheek.IsGround = true;
+                playerState = PlayerState.None;
             }
             
         }
         if (collision.collider.CompareTag("Out"))
         {
-            transform.position = new Vector3(-4.6f, -2.53f, 0);
+            transform.position = spawn;
+            jumping = false;
+            playerState = PlayerState.None;
+        }
+        if (collision.collider.CompareTag("Spawn"))
+        {
+            spawn = this.transform.position;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("ending"))
+        {
+            end = true;
         }
     }
 
@@ -244,7 +297,7 @@ public class GameSample : MonoBehaviour
         {
             timer += Time.deltaTime;
             yield return new WaitForSeconds(0.005f);
-            transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.2f, 0);
+            transform.localPosition = new Vector3(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y + 0.3f, 0);
         }
         timer = 0;
     }
@@ -257,7 +310,7 @@ public class GameSample : MonoBehaviour
             movePower = 0;
             jumpPower = 0;
             yield return new WaitForSeconds(1);
-            movePower = 5;
+            movePower = 7;
             jumpPower = 10.0f;
             playerColor = PlayerColor.None;
             anim.SetTrigger("Wait");
@@ -275,7 +328,7 @@ public class GameSample : MonoBehaviour
             movePower = 0;
             jumpPower = 0;
             yield return new WaitForSeconds(1);
-            movePower = 5;
+            movePower = 7;
             jumpPower = 10.0f;
             playerColor = PlayerColor.None;
             playerState = PlayerState.None;

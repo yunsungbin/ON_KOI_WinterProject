@@ -15,7 +15,7 @@ public class GCheek : MonoBehaviour
             IsGround = true;
             
             GameSample.jumpPower = 10;
-            GameSample.movePower = 5;
+            GameSample.movePower = 7;
         }
     }
     

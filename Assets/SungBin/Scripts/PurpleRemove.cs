@@ -17,7 +17,7 @@ public class PurpleRemove : MonoBehaviour
     {
         if (ColorBlocks.pSpawn == true)
         {
-            for(i = 0; i < int.MaxValue; i++)
+            for (i = 0; i < int.MaxValue; i++)
             {
                 purpleGround[i].SetActive(true);
             }
@@ -29,6 +29,8 @@ public class PurpleRemove : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         float timer = 0;
+        GameSample.jumper = 1;
+        GCheek.IsGround = true;
         StartCoroutine(EnterPurpleBlocks());
         //Destroy(purpleGround, 0.5f);
         while (timer > 1)

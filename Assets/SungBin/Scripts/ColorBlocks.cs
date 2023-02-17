@@ -66,7 +66,6 @@ public class ColorBlocks : MonoBehaviour
                         GameSample.isPurple = false;
                         PurpleSpawn = true;
                         pSpawn = true;
-                        
                     }
                     break;
                 }
@@ -93,21 +92,24 @@ public class ColorBlocks : MonoBehaviour
                 {
                     if(GameSample.yellowCheek == true)
                     {
-                        GameSample.jumpPower = 20;
-                        GameSample.movePower = 10;
+                        GameSample.jumpPower = 15;
+                        GameSample.movePower = 12;
                         
                     }
                     if (GCheek.groundCH == true)
                     {
                         GameSample.jumpPower = 10;
-                        GameSample.movePower = 5;
+                        GameSample.movePower = 7;
                     }
 
                     break;
                 }
             case ColorState.Blue:
                 {
-                    
+                    if(GameSample.playerColor == GameSample.PlayerColor.Blue)
+                    {
+                        bluePos = this.transform.position;
+                    }
                     break;
                 }
         }
