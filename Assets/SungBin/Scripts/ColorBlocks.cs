@@ -125,7 +125,7 @@ public class ColorBlocks : MonoBehaviour
             GCheek.groundCH = false;
             GameSample.yellowCheek = true;
         }
-        if(collision.collider.CompareTag("Player") && colorState == ColorState.Blue && GameSample.playerColor == GameSample.PlayerColor.None)
+        if(collision.collider.CompareTag("Player") && GameSample.playerColor == GameSample.PlayerColor.None && colorState == ColorState.Blue)
         {
             StartCoroutine(TimeBlue());
         }

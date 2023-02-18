@@ -42,7 +42,7 @@ public class GameSample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spawn = new Vector3(-4.6f, -2.53f, 0);
+        spawn = new Vector3(-4.6f, 12.41f, 0);
         rigid = gameObject.GetComponent<Rigidbody2D>();
     }
 
@@ -202,10 +202,12 @@ public class GameSample : MonoBehaviour
                     if(Right == true)
                     {
                         StartCoroutine(RBreak());
+                        playerColor = PlayerColor.None;
                     }
                     if(Left == true)
                     {
                         StartCoroutine(LBreak());
+                        playerColor = PlayerColor.None;
                     }
                     break;
                 }

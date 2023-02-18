@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/SungBin/Title.unity
+    guid: 33ede9aa5c6208240be5c33a688ca415
+  - enabled: 1
     path: Assets/SungBin/NewSample.unity
     guid: dfc1997f1fc32ef4eb31ed51a6a33004
   - enabled: 1
